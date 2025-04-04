@@ -13,6 +13,17 @@ RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o ./webhook-go
 
 FROM ghcr.io/voxpupuli/r10k:$R10K_VERSION-latest
 
+LABEL org.label-schema.maintainer="Vox Pupuli Team <voxpupuli@groups.io>" \
+      org.label-schema.vendor="Vox Pupuli" \
+      org.label-schema.url="https://github.com/voxpupuli/container-r10k-webhook" \
+      org.label-schema.vcs-url="https://github.com/voxpupuli/container-r10k-webhook" \
+      org.label-schema.schema-version="1.0" \
+      org.label-schema.dockerfile="/Containerfile" \
+      org.label-schema.name="Vox Pupuli R10k Webhook ($build_type)" \
+      org.label-schema.version="$WEBHOOK_GO_VERSION-$vcs_ref" \
+      org.label-schema.vcs-ref="$vcs_ref" \
+      org.label-schema.build-date="$build_date"
+
 ENV USER="puppet"
 ENV PORT=4000
 ENV TLS=false

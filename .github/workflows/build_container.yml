@@ -1,0 +1,118 @@
+---
+name: 📦 Build and Publish
+
+on:
+  push:
+    branches:
+      - 'main'
+    tags:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  setup-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      build_matrix: ${{ steps.set-build-matrix.outputs.build_matrix }}
+      tag_matrix: ${{ steps.set-tag-matrix.outputs.tag_matrix }}
+    steps:
+      - name: Source checkout
+        uses: actions/checkout@v4
+
+      - name: 'Setup yq'
+        uses: dcarbone/install-yq-action@v1.3.1
+
+      - id: set-build-matrix
+        run: echo "build_matrix=$(bash matrix.sh build)" >> $GITHUB_OUTPUT
+
+      - id: set-tag-matrix
+        run: echo "tag_matrix=$(bash matrix.sh tag)" >> $GITHUB_OUTPUT
+
+  build-and-push-container:
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+      packages: write
+    needs: setup-matrix
+    strategy:
+      matrix: ${{ fromJson(needs.setup-matrix.outputs.build_matrix) }}
+    steps:
+      - name: Build Vox Pupuli r10k webhook Container v${{ matrix.source_webhook-go }}
+        uses: voxpupuli/gha-build-and-publish-a-container@v2
+        with:
+          registry_password: ${{ secrets.GITHUB_TOKEN }}
+          build_args: |
+            R10K_VERSION=${{ matrix.container_r10k }}
+            WEBHOOK_GO_VERSION=${{ matrix.source_webhook-go }}
+
+          build_arch: linux/${{ matrix.platform }}
+          docker_username: voxpupulibot
+          docker_password: ${{ secrets.DOCKERHUB_BOT_PASSWORD }}
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-${{ matrix.platform }}
+
+  create-multiarch-manifests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+      - setup-matrix
+      - build-and-push-container
+    strategy:
+      matrix: ${{ fromJson(needs.setup-matrix.outputs.tag_matrix) }}
+    steps:
+      - name: Log in to the ghcr.io registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to the docker.io registry
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: voxpupulibot
+          password: ${{ secrets.DOCKERHUB_BOT_PASSWORD }}
+
+      - name: Create multiarch manifests
+        run: |
+          docker buildx imagetools create -t ghcr.io/voxpupuli/r10k-webhook:${{ matrix.source_webhook-go }} \
+            ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-arm64 \
+            ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-x86_64
+
+          docker buildx imagetools create -t ghcr.io/voxpupuli/r10k-webhook:${{ matrix.source_webhook-go }}-${{ github.ref_name }} \
+            ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-arm64 \
+            ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-x86_64
+
+          docker buildx imagetools create -t ghcr.io/voxpupuli/r10k-webhook:latest \
+            ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-arm64 \
+            ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-x86_64
+
+          docker buildx imagetools create -t docker.io/voxpupuli/r10k-webhook:${{ matrix.source_webhook-go }} \
+            ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-arm64 \
+            ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-x86_64
+
+          docker buildx imagetools create -t docker.io/voxpupuli/r10k-webhook:${{ matrix.source_webhook-go }}-${{ github.ref_name }} \
+            ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-arm64 \
+            ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-x86_64
+
+          docker buildx imagetools create -t docker.io/voxpupuli/r10k-webhook:latest \
+            ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-arm64 \
+            ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-x86_64
+
+  update-dockerhub-description:
+    runs-on: ubuntu-latest
+    needs:
+      - create-multiarch-manifests
+    steps:
+      - name: Source checkout
+        uses: actions/checkout@v4
+
+      - name: Update Docker Hub Description
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: voxpupulibot
+          password: ${{ secrets.DOCKERHUB_BOT_PASSWORD }}
+          repository: voxpupuli/r10k-webhook
