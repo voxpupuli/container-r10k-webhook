@@ -11,12 +11,12 @@ server:
     certificate: ${TLS_CERT:-""}
     key: ${TLS_KEY:-""}
 chatops:
-  enabled: false
-  service: slack
-  channel: "#general"
-  user: r10kbot
-  auth_token: 12345
-  server_uri: "https://rocketchat.local"
+  enabled: ${CHAT}
+  service: ${CHAT_SERVICE}
+  channel: ${CHAT_CHANNEL}
+  user: ${CHAT_USER}
+  auth_token: ${CHAT_TOKEN}
+  server_uri: ${CHAT_URL}
 r10k:
   command_path: /usr/local/bin/r10k
   config_path: /etc/puppetlabs/r10k/r10k.yaml

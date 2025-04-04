@@ -19,6 +19,8 @@ ENV TLS=false
 ENV DEFAULT_BRANCH="production"
 ENV GENERATE_TYPES=true
 ENV VERBOSE=false
+ENV CHAT=false
+ENV CHAT_USER="r10kbot"
 
 USER root
 
