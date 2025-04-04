@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       build_matrix: ${{ steps.set-build-matrix.outputs.build_matrix }}
-      tag_matrix: ${{ steps.set-tag-matrix.outputs.tag_matrix }}
     steps:
       - name: Source checkout
         uses: actions/checkout@v4
@@ -25,12 +24,9 @@ jobs:
       - id: set-build-matrix
         run: echo "build_matrix=$(bash matrix.sh build)" >> $GITHUB_OUTPUT
 
-      - id: set-tag-matrix
-        run: echo "tag_matrix=$(bash matrix.sh tag)" >> $GITHUB_OUTPUT
-
   scan_ci_container:
     name: 'Scan CI container'
-    runs-on: ${{ matrix.builder }}
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix: ${{ fromJson(needs.setup-matrix.outputs.build_matrix) }}
     needs: setup-matrix
@@ -50,7 +46,7 @@ jobs:
           file: Containerfile
           build-args: |
             R10K_VERSION=${{ matrix.container_r10k }}
-            WEBHOOK_GO_VERSION=${{ matrix.source_webhook-go }}
+            WEBHOOK_GO_VERSION=${{ matrix.source_webhook_go }}
           push: false
           platforms: linux/${{ matrix.platform }}
 

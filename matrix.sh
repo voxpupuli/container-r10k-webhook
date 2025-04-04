@@ -9,7 +9,7 @@ fi
 
 if [ "$1" == "tag" ]; then
     # jq -s '(.[0].platforms[] | .platform) as $platform | (.[1].include[] | .puppet_release) as $release | { puppet_release: $release, platform: $platform }' build_platforms.json build_versions.json | jq -s '{include: .}'
-    jq -cr '.include |= map({ source_webhook-go: .source_webhook-go })' build_versions.json
+    jq -cr '.include |= map({ source_webhook_go: .source_webhook_go })' build_versions.json
 fi
 
 rm build_platforms.json
