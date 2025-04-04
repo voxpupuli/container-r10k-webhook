@@ -22,6 +22,6 @@ r10k:
   config_path: /etc/puppetlabs/r10k/r10k.yaml
   default_branch: ${DEFAULT_BRANCH}
   allow_uppercase: false
-  verbose: false
+  verbose: ${VERBOSE}
   generate_types: ${GENERATE_TYPES}
 EOF

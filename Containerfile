@@ -14,11 +14,11 @@ RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o ./webhook-go
 FROM ghcr.io/voxpupuli/r10k:$R10K_VERSION-latest
 
 ENV USER="puppet"
-ENV PASSWORD
 ENV PORT=4000
 ENV TLS=false
 ENV DEFAULT_BRANCH="production"
 ENV GENERATE_TYPES=true
+ENV VERBOSE=false
 
 USER root
 
