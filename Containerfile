@@ -25,7 +25,7 @@ USER root
 COPY --from=builder --chmod=755 /build/webhook-go /usr/sbin/webhook-go
 COPY --chmod=755 webhook/docker-entrypoint.sh /docker-entrypoint.sh
 COPY webhook/docker-entrypoint.d /docker-entrypoint.d
-COPY Dockerfile /
+COPY Containerfile /
 
 EXPOSE 4000
 ENTRYPOINT ["/docker-entrypoint.sh"]
