@@ -52,7 +52,7 @@ jobs:
           build_arch: linux/${{ matrix.platform }}
           buildfile: Containerfile
           docker_username: voxpupulibot
-          docker_password: ${{ secrets.DOCKERHUB_BOT_PASSWORD }}
+          docker_password: ${{ secrets.DOCKERHUB_BOT_ADMIN_TOKEN }}
           tags: |
             ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-${{ matrix.platform }}
 
@@ -79,7 +79,7 @@ jobs:
         with:
           registry: docker.io
           username: voxpupulibot
-          password: ${{ secrets.DOCKERHUB_BOT_PASSWORD }}
+          password: ${{ secrets.DOCKERHUB_BOT_ADMIN_TOKEN }}
 
       - name: Create multiarch manifests
         run: |
@@ -119,5 +119,5 @@ jobs:
         uses: peter-evans/dockerhub-description@v4
         with:
           username: voxpupulibot
-          password: ${{ secrets.DOCKERHUB_BOT_PASSWORD }}
+          password: ${{ secrets.DOCKERHUB_BOT_ADMIN_TOKEN }}
           repository: voxpupuli/r10k-webhook
