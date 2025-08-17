@@ -1,5 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "addLabels": [
+    "dependencies",
+    "renovate"
+  ],
   "assigneesFromCodeOwners": true,
   "automerge": true,
   "automergeType": "pr",
@@ -29,15 +33,10 @@
   "extends": [
     "config:recommended"
   ],
-  "addLabels": [
-    "dependencies",
-    "renovate",
-    "github_actions"
-  ],
   "vulnerabilityAlerts": {
-    "enabled": true,
     "addLabels": [
       "security"
-    ]
+    ],
+    "enabled": true
   }
 }
