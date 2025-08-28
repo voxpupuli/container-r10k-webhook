@@ -6,11 +6,15 @@
 
 ## Introduction
 
-This container is designed for deploying Puppet code using r10k triggered by webhooks. It includes the webhook-go daemon and r10k gem along with all necessary dependencies pre-installed, ensuring a seamless deployment process.
+This container is designed for deploying Puppet code using r10k triggered by webhooks.
+It includes the webhook-go daemon and r10k gem along with all necessary dependencies pre-installed, ensuring a seamless deployment process.
 
 ## Usage
 
-To run r10k, simply execute the container. The r10k binary is set as the default entrypoint. The container operates as the puppet user with a UID/GID of 999. You can use a shared volume with a Puppet server and mount it at `/etc/puppetlabs/code/environments`.
+To run r10k, simply execute the container.
+The r10k binary is set as the default entrypoint.
+The container operates as the puppet user with a UID/GID of 999.
+You can use a shared volume with a Puppet server and mount it at `/etc/puppetlabs/code/environments`.
 
 ```yaml
 services:
@@ -38,7 +42,7 @@ This container is based on the [r10k container](https://github.com/voxpupuli/con
 
 | Name | Description |
 | ---- | ------------|
-| `USER` | Login username to trigger hooks. Defauls to `puppet`. | 
+| `USER` | Login username to trigger hooks. Defauls to `puppet`. |
 | `PASSWORD` | Required. Password for user to login. |
 | `PORT` | Listen on this port. Defaults to `4000`. |
 | `TLS` | Expect incoming HTTPS. Defaults to `false`. |
@@ -46,7 +50,7 @@ This container is based on the [r10k container](https://github.com/voxpupuli/con
 | `TLS_KEY` | Path to the private key file. Only required if TLS=true. |
 | `DEFAULT_BRANCH` | Set the default branch to deploy. Defaults too `production`. |
 | `GENERATE_TYPES` | Generate data types after successful deployment. Defaults to `true`. |
-| `CHAT` | Enable notification for a chat. Defaults to `false` | 
+| `CHAT` | Enable notification for a chat. Defaults to `false` |
 | `CHAT_SEREVICE` | Chat type, e.g. slack. |
 | `CHAT_URL` | Chat server URL. |
 | `CHAT_CHANNEL` | Destination channel to notify for. |
