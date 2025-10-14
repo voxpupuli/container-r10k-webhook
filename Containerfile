@@ -36,10 +36,10 @@ ENV CHAT_USER="r10kbot"
 USER root
 
 COPY --from=builder --chmod=755 /build/webhook-go /usr/sbin/webhook-go
-COPY --chmod=755 webhook/docker-entrypoint.sh /docker-entrypoint.sh
-COPY webhook/docker-entrypoint.d /docker-entrypoint.d
+COPY --chmod=755 container-entrypoint.sh /container-entrypoint.sh
+COPY container-entrypoint.d /container-entrypoint.d
 COPY Containerfile /
 
 EXPOSE 4000
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["/container-entrypoint.sh"]
 CMD [ "server", "--config", "/etc/webhook.yml" ]
