@@ -10,6 +10,10 @@ server:
     enabled: ${TLS}
     certificate: ${TLS_CERT:-""}
     key: ${TLS_KEY:-""}
+  queue:
+    enabled: ${ENABLE_QUEUE}
+    max_concurrent_jobs: ${MAX_CONCURRENT_JOBS}
+    max_history_items: ${MAX_HISTORY_ITEMS}
 chatops:
   enabled: ${CHAT}
   service: ${CHAT_SERVICE}
