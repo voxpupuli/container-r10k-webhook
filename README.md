@@ -48,6 +48,9 @@ This container is based on the [r10k container](https://github.com/voxpupuli/con
 | `TLS` | Expect incoming HTTPS. Defaults to `false`. |
 | `TLS_CERT` | Path to the certificate file. Only required if TLS=true. |
 | `TLS_KEY` | Path to the private key file. Only required if TLS=true. |
+| `ENABLE_QUEUE` | Enable queuing of requests for background processing. Defaults to `false` |
+| `MAX_CONCURRENT_JOBS` | How many jobs could be stored in queue. Defaults to `10` |
+| `MAX_HISTORY_ITEMS` | How many queue items should be stored in the history. Defaults to `50` |
 | `DEFAULT_BRANCH` | Set the default branch to deploy. Defaults too `production`. |
 | `GENERATE_TYPES` | Generate data types after successful deployment. Defaults to `true`. |
 | `CHAT` | Enable notification for a chat. Defaults to `false` |
