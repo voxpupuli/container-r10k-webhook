@@ -41,7 +41,7 @@ services:
 This container is based on the [r10k container](https://github.com/voxpupuli/container-r10k) and therefore all its environment variables also apply here.
 
 | Name | Description |
-| ---- | ------------|
+| ---- | ----------- |
 | `USER` | Login username to trigger hooks. Defauls to `puppet`. |
 | `PASSWORD` | Required. Password for user to login. |
 | `PORT` | Listen on this port. Defaults to `4000`. |
@@ -54,7 +54,7 @@ This container is based on the [r10k container](https://github.com/voxpupuli/con
 | `DEFAULT_BRANCH` | Set the default branch to deploy. Defaults too `production`. |
 | `GENERATE_TYPES` | Generate data types after successful deployment. Defaults to `true`. |
 | `CHAT` | Enable notification for a chat. Defaults to `false` |
-| `CHAT_SEREVICE` | Chat type, e.g. slack. |
+| `CHAT_SERVICE` | Chat type, e.g. slack. |
 | `CHAT_URL` | Chat server URL. |
 | `CHAT_CHANNEL` | Destination channel to notify for. |
 | `CHAT_USER` | Login user. |
@@ -65,9 +65,9 @@ This container is based on the [r10k container](https://github.com/voxpupuli/con
 ### Build Arguments
 
 | Name | Description |
-| ---- | ------------|
-|`R10K_VERSION`| The R10k container version to use as base layer. |
-|`WEBHOOK_GO_VERSION`| Version of webhook-go to install. |
+| ---- | ----------- |
+| `R10K_VERSION` | The R10k container version to use as base layer. |
+| `WEBHOOK_GO_VERSION` | Version of webhook-go to install. |
 
 ## Version Schema
 
@@ -89,9 +89,9 @@ docker pull ghcr.io/voxpupuli/r10k-webhook:latest
 
 | Name | Description |
 | --- | --- |
-| webhook-go.major    | Describes the contained major webhook-go version |
-| webhook-go.minor    | Describes the contained minor webhook-go version |
-| webhook-go.patch    | Describes the contained patch webhook-go version |
+| webhook-go.major | Describes the contained major webhook-go version |
+| webhook-go.minor | Describes the contained minor webhook-go version |
+| webhook-go.patch | Describes the contained patch webhook-go version |
 | container.major | Describes breaking changes without backward compatibility |
 | container.minor | Describes new features or refactoring with backward compatibility |
 | container.patch | Describes if minor changes or bugfixes have been implemented |
