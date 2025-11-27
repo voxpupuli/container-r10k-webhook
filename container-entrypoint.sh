@@ -2,10 +2,10 @@
 
 set -e
 
-if [ -d /container-entrypoint.d/ ]; then
-    find /container-entrypoint.d/ -type f -name "*.sh" \
-        -exec echo Running {} \; -exec sh {} \;
-fi
+for f in /container-entrypoint.d/*.sh; do
+	echo "Running $f"
+	"$f"
+done
 
 args="$@"
 su puppet -c "exec /usr/sbin/webhook-go $args"

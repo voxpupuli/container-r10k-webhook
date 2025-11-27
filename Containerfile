@@ -43,6 +43,8 @@ COPY --chmod=755 container-entrypoint.sh /container-entrypoint.sh
 COPY container-entrypoint.d /container-entrypoint.d
 COPY Containerfile /
 
+RUN chmod +x /container-entrypoint.d/*.sh
+
 EXPOSE 4000
 ENTRYPOINT ["/container-entrypoint.sh"]
 CMD [ "server", "--config", "/etc/webhook.yml" ]
