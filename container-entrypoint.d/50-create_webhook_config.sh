@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cat > /etc/webhook.yml << EOF
+cat > /etc/voxpupuli/webhook/webhook.yml << EOF
 server:
   protected: true
   user: ${USER}

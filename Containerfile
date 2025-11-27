@@ -43,8 +43,12 @@ COPY --chmod=755 container-entrypoint.sh /container-entrypoint.sh
 COPY container-entrypoint.d /container-entrypoint.d
 COPY Containerfile /
 
-RUN chmod +x /container-entrypoint.d/*.sh
+RUN mkdir -m 0755 -p /etc/voxpupuli/webhook \
+    && chown puppet: /etc/voxpupuli/webhook \
+    && chmod +x /container-entrypoint.d/*.sh
+
+USER puppet
 
 EXPOSE 4000
 ENTRYPOINT ["/container-entrypoint.sh"]
-CMD [ "server", "--config", "/etc/webhook.yml" ]
+CMD [ "server", "--config", "/etc/voxpupuli/webhook/webhook.yml" ]

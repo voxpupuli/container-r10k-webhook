@@ -7,5 +7,4 @@ for f in /container-entrypoint.d/*.sh; do
 	"$f"
 done
 
-args="$@"
-su puppet -c "exec /usr/sbin/webhook-go $args"
+exec /usr/sbin/webhook-go "$@"
