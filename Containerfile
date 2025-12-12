@@ -43,7 +43,9 @@ COPY --chmod=755 container-entrypoint.sh /container-entrypoint.sh
 COPY container-entrypoint.d /container-entrypoint.d
 COPY Containerfile /
 
-RUN mkdir -m 0755 -p /etc/voxpupuli/webhook \
+RUN apk update \
+    && apk add --no-cache ca-certificates jq \
+    &&  mkdir -m 0755 -p /etc/voxpupuli/webhook \
     && chown puppet: /etc/voxpupuli/webhook \
     && chmod +x /container-entrypoint.d/*.sh
 
