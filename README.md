@@ -42,23 +42,39 @@ This container is based on the [r10k container](https://github.com/voxpupuli/con
 
 | Name | Description |
 | ---- | ----------- |
-| `USER` | Login username to trigger hooks. Defauls to `puppet`. |
-| `PASSWORD` | Required. Password for user to login. |
-| `PORT` | Listen on this port. Defaults to `4000`. |
-| `TLS` | Expect incoming HTTPS. Defaults to `false`. |
-| `TLS_CERT` | Path to the certificate file. Only required if TLS=true. |
-| `TLS_KEY` | Path to the private key file. Only required if TLS=true. |
+| `CERT_JSON` | no default. |
+| `CHAT_CHANNEL` | Destination channel to notify for. |
+| `CHAT_SERVICE` | Chat type, e.g. slack. |
+| `CHAT_TOKEN` | The token for authentication. |
+| `CHAT_URL` | Chat server URL. |
+| `CHAT_USER` | Login user. |
+| `CHAT` | Enable notification for a chat. Defaults to `false` |
+| `DEFAULT_BRANCH` | Set the default branch to deploy. Defaults too `production`. |
 | `ENABLE_QUEUE` | Enable queuing of requests for background processing. Defaults to `false` |
+| `GENERATE_TYPES` | Generate data types after successful deployment. Defaults to `true`. |
 | `MAX_CONCURRENT_JOBS` | How many jobs could be stored in queue. Defaults to `10` |
 | `MAX_HISTORY_ITEMS` | How many queue items should be stored in the history. Defaults to `50` |
-| `DEFAULT_BRANCH` | Set the default branch to deploy. Defaults too `production`. |
-| `GENERATE_TYPES` | Generate data types after successful deployment. Defaults to `true`. |
-| `CHAT` | Enable notification for a chat. Defaults to `false` |
-| `CHAT_SERVICE` | Chat type, e.g. slack. |
-| `CHAT_URL` | Chat server URL. |
-| `CHAT_CHANNEL` | Destination channel to notify for. |
-| `CHAT_USER` | Login user. |
-| `CHAT_TOKEN` | The token for authentication. |
+| `PASSWORD` | Required. Password for user to login. |
+| `PORT` | Listen on this port. Defaults to `4000`. |
+| `TLS_CERT` | Path to the certificate file. Only required if TLS=true. |
+| `TLS_KEY` | Path to the private key file. Only required if TLS=true. |
+| `TLS` | Expect incoming HTTPS. Defaults to `false`. |
+| `USER` | Login username to trigger hooks. Defauls to `puppet`. |
+
+### Adding additional certificates to the container
+
+If you somehow need own certificates inside the container, you can add them over the entrypoint script.
+
+For example: you want to run the webhook on a target with your own ca certificates.
+Export the `CERT_JSON` and the container will import it on runtime.
+It is expected that the certificates are a json hash of PEM certificates.
+It is preferable that the json is uglified into a onliner.
+
+You may add this as a CI Variable for your runners on Github/Gitlab.
+
+```json
+{"certificates":{"root_ca":"-----BEGIN CERTIFICATE-----\n...","signing_ca":"-----BEGIN CERTIFICATE-----\n..."}}
+```
 
 ## Build
 
