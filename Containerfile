@@ -1,7 +1,7 @@
 ARG R10K_VERSION=5.0.0
 
 FROM docker.io/library/golang:alpine AS builder
-ARG WEBHOOK_GO_VERSION=2.9.0
+ARG WEBHOOK_GO_VERSION=2.13.0
 
 RUN apk add --no-cache ca-certificates
 
