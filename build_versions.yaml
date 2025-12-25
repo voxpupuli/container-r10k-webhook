@@ -1,4 +1,4 @@
 ---
 include:
   - container_r10k: "5.0.0"
-    source_webhook_go: "2.9.0"
+    source_webhook_go: "2.13.0"
