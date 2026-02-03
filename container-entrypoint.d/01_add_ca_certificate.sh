@@ -19,5 +19,5 @@ if [ -n "${CERT_JSON}" ]; then
     echo "INFO: imported ${key}"
   done
 
-  update-ca-certificates
+  sudo /usr/sbin/update-ca-certificates
 fi
