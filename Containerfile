@@ -52,7 +52,7 @@ RUN apk update \
     && chmod 440 /etc/sudoers.d/puppet \
     && chown root:root /etc/sudoers.d/puppet \
     && chmod 0770 /usr/local/share/ca-certificates/ \
-    && chown -R root:puppet /usr/local/share/ca-certificates/
+    && chown -R root:999 /usr/local/share/ca-certificates/
 
 USER puppet
 
