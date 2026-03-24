@@ -60,6 +60,7 @@ This container is based on the [r10k container](https://github.com/voxpupuli/con
 | `TLS_KEY` | Path to the private key file. Only required if TLS=true. |
 | `TLS` | Expect incoming HTTPS. Defaults to `false`. |
 | `USER` | Login username to trigger hooks. Defauls to `puppet`. |
+| `DEPLOY_ON_SUCCESS_ONLY` | Only run a deploy if checks pass. Defaults to `false` |
 
 ### Adding additional certificates to the container
 
