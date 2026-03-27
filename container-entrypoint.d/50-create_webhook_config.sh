@@ -6,6 +6,7 @@ server:
   user: ${USER}
   password: ${PASSWORD}
   port: ${PORT}
+  deploy_on_success_only: ${DEPLOY_ON_SUCCESS_ONLY}
   tls:
     enabled: ${TLS}
     certificate: ${TLS_CERT:-""}

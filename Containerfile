@@ -27,6 +27,7 @@ LABEL org.label-schema.maintainer="Vox Pupuli Team <voxpupuli@groups.io>" \
 ENV USER="puppet"
 ENV PORT=4000
 ENV TLS=false
+ENV DEPLOY_ON_SUCCESS_ONLY=false
 ENV DEFAULT_BRANCH="production"
 ENV GENERATE_TYPES=true
 ENV VERBOSE=false
