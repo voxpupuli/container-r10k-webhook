@@ -1,11 +1,35 @@
 ---
-.github/workflows/ci.yml:
+:global:
   matrix_command: bash matrix.sh build
   matrix_requires_yq: true
-  general_ci_scan_dir: .
   build_runner: '${{ matrix.runner }}'
   image_tag: 'ci/r10k-webhook:${{ matrix.source_webhook_go }}'
   build_platforms: 'linux/${{ matrix.platform }}'
   build_args:
     - 'R10K_VERSION=${{ matrix.container_r10k }}'
     - 'WEBHOOK_GO_VERSION=${{ matrix.source_webhook_go }}'
+.github/workflows/ci.yml:
+  general_ci_scan_dir: .
+.github/workflows/security_scanning.yml:
+  scan_job_name: 'Scan ${{ matrix.platform }} container'
+  sarif_category: 'grype-${{ matrix.source_webhook_go }}-${{ matrix.platform }}'
+.github/workflows/build_container.yml:
+  publish_build_job_name: 'Build r10k webhook ${{ matrix.source_webhook_go }} (${{ matrix.platform }})'
+  publish_build_arch: 'linux/${{ matrix.platform }}'
+  publish_tags:
+    - 'ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-${{ matrix.platform }}'
+  publish_manifest_matrix_command: bash matrix.sh tag
+  publish_manifest_steps:
+    - name: Create multi-architecture manifests
+      commands:
+        - >-
+          docker buildx imagetools create
+          -t ghcr.io/voxpupuli/r10k-webhook:${{ matrix.source_webhook_go }}
+          -t ghcr.io/voxpupuli/r10k-webhook:${{ matrix.source_webhook_go }}-${{ github.ref_name }}
+          -t ghcr.io/voxpupuli/r10k-webhook:latest
+          -t docker.io/voxpupuli/r10k-webhook:${{ matrix.source_webhook_go }}
+          -t docker.io/voxpupuli/r10k-webhook:${{ matrix.source_webhook_go }}-${{ github.ref_name }}
+          -t docker.io/voxpupuli/r10k-webhook:latest
+          ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-arm64
+          ghcr.io/${{ github.repository_owner }}/r10k-webhook:${{ github.sha }}-amd64
+  dockerhub_repository: voxpupuli/r10k-webhook
