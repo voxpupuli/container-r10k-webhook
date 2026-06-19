@@ -1,6 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "addLabels": [ "dependencies", "renovate" ],
+  "addLabels": [
+    "dependencies",
+    "renovate"
+  ],
   "assigneesFromCodeOwners": true,
   "automerge": true,
   "automergeType": "pr",
@@ -25,17 +28,39 @@
         "#\\s*renovate:\\s*depName=(?<depName>.*?)\\s*openVoxRelease=(?<openVoxRelease>\\d+)\\s*\\n\\s*(?<key>\\w+_version):\\s*\"(?<currentValue>.*?)\""
       ],
       "registryUrlTemplate": "https://apt.voxpupuli.org?suite=ubuntu24.04&components=openvox{{openVoxRelease}}&binaryArch=amd64"
+    },
+    {
+      "customType": "regex",
+      "datasourceTemplate": "rubygems",
+      "versioningTemplate": "ruby",
+      "managerFilePatterns": [
+        "/Containerfile/"
+      ],
+      "matchStrings": [
+        "#\\s*renovate:\\s*depName=(?<depName>[a-zA-Z0-9_-]+)\\s+datasource=rubygems\\s*\\n\\s*ENV\\s+RUBYGEM_[A-Z0-9_-]+=\\$\\{RUBYGEM_[A-Z0-9_-]+:-?(?<currentValue>[^}\\n]+)\\}"
+      ]
     }
   ],
-  "extends": [ "config:recommended", ":prImmediately" ],
+  "extends": [
+    "config:recommended",
+    ":prImmediately"
+  ],
   "vulnerabilityAlerts": {
-    "addLabels": [ "security" ],
+    "addLabels": [
+      "security"
+    ],
     "enabled": true
   },
   "packageRules": [
     {
-      "matchPackagePatterns": [".*"],
-      "dependencyDashboardApproval": false
+      "dependencyDashboardApproval": false,
+      "matchPackageNames": [
+        "/.*/"
+      ]
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "enabled": true
     }
   ]
 }
