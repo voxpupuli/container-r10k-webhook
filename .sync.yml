@@ -1,0 +1,11 @@
+---
+.github/workflows/ci.yml:
+  matrix_command: bash matrix.sh build
+  matrix_requires_yq: true
+  general_ci_scan_dir: .
+  build_runner: '${{ matrix.runner }}'
+  image_tag: 'ci/r10k-webhook:${{ matrix.source_webhook_go }}'
+  build_platforms: 'linux/${{ matrix.platform }}'
+  build_args:
+    - 'R10K_VERSION=${{ matrix.container_r10k }}'
+    - 'WEBHOOK_GO_VERSION=${{ matrix.source_webhook_go }}'
