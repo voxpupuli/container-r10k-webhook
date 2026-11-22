@@ -55,13 +55,57 @@ This container is based on the [r10k container](https://github.com/voxpupuli/con
 | `GENERATE_TYPES` | Generate data types after successful deployment. Defaults to `true`. |
 | `MAX_CONCURRENT_JOBS` | How many jobs could be stored in queue. Defaults to `10` |
 | `MAX_HISTORY_ITEMS` | How many queue items should be stored in the history. Defaults to `50` |
-| `PASSWORD` | Required. Password for user to login. |
+| `PASSWORD` | Required unless `PROTECTED=false`. Password for user to login. |
 | `PORT` | Listen on this port. Defaults to `4000`. |
+| `PROTECTED` | Require HTTP basic authentication (`USER`/`PASSWORD`) on every request. Defaults to `true`. See [Webhook secrets and authentication](#webhook-secrets-and-authentication). |
+| `SECRETS_AZURE_DEVOPS` | Azure DevOps secret, the password of the service hook's basic authentication. Empty by default, which disables verification for this provider. |
+| `SECRETS_BITBUCKET_SERVER` | Bitbucket Server / Data Center webhook secret (HMAC-SHA256). Empty by default, which disables verification for this provider. |
+| `SECRETS_BITBUCKET` | Bitbucket Cloud webhook secret (HMAC-SHA256). Empty by default, which disables verification for this provider. |
+| `SECRETS_GITEA` | Gitea webhook secret (HMAC-SHA256). Empty by default, which disables verification for this provider. |
+| `SECRETS_GITHUB` | GitHub webhook secret (HMAC-SHA256). Empty by default, which disables verification for this provider. |
+| `SECRETS_GITLAB` | GitLab secret token. Empty by default, which disables verification for this provider. |
 | `TLS_CERT` | Path to the certificate file. Only required if TLS=true. |
 | `TLS_KEY` | Path to the private key file. Only required if TLS=true. |
 | `TLS` | Expect incoming HTTPS. Defaults to `false`. |
 | `USER` | Login username to trigger hooks. Defauls to `puppet`. |
 | `DEPLOY_ON_SUCCESS_ONLY` | Only run a deploy if checks pass. Defaults to `false` |
+
+### Webhook secrets and authentication
+
+By default the webhook is protected by HTTP basic authentication (`USER`/`PASSWORD`).
+Git providers can also sign every payload with a shared secret, and `webhook-go` verifies that signature before it deploys anything.
+Set `SECRETS_<PROVIDER>` to the same value you enter in the provider's webhook settings, for example the *Secret* field of a GitHub webhook:
+
+```yaml
+services:
+  webhook:
+    image: ghcr.io/voxpupuli/r10k-webhook:latest
+    environment:
+      - PUPPET_CONTROL_REPO=https://git.example.org/puppet/control.git
+      - USER=puppet
+      - PASSWORD=change-me
+      - SECRETS_GITHUB=a-long-random-string
+```
+
+Only providers with a non-empty secret are written to the generated `webhook.yml`, an unset variable changes nothing.
+The secrets end up in `/etc/voxpupuli/webhook/webhook.yml` inside the container, with mode `0660` (not readable by other users, but by group 0, like the rest of this image's files).
+
+How the two mechanisms interact:
+
+* **Both enabled (the default with a secret set)** is defense in depth: a request needs valid basic authentication *and* a valid signature.
+  The sender must then be able to send the basic authentication credentials, which not every provider can do.
+* **Secrets only** with `PROTECTED=false`: basic authentication is no longer required, so the credentials are not needed in the webhook URL, and `PASSWORD` can be left unset.
+  The signature is the only protection, so set a secret for every provider you use.
+* Setting any secret enables verification for the whole endpoint: a request that claims a provider without a configured secret is rejected with `401 Unauthorized`, and so is a request with a missing or wrong signature.
+* `PROTECTED=false` with no secret leaves the endpoint open to anyone who can reach the port.
+  The container only prints a warning in that case, so use it only behind something that authenticates requests, such as a reverse proxy.
+* **Azure DevOps** sends the secret as the password of HTTP basic authentication.
+  With `PROTECTED=true` the same `Authorization` header is checked twice, so the service hook's username must be `USER` and its password must equal both `PASSWORD` and `SECRETS_AZURE_DEVOPS`.
+  With `PROTECTED=false` the username is ignored and the password must equal `SECRETS_AZURE_DEVOPS`.
+
+For GitHub, create the webhook with the content type `application/json`, the same value in its *Secret* field as in `SECRETS_GITHUB`, and the payload URL `https://<your-server>/api/v1/r10k/environment`.
+See the [webhook-go documentation](https://github.com/voxpupuli/webhook-go#secrets) for the other providers.
+Secrets are supported since webhook-go `2.17.0`.
 
 ### Adding additional certificates to the container
 
