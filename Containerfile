@@ -1,7 +1,7 @@
 ARG R10K_VERSION=5.0.3
 
 FROM docker.io/library/golang:alpine AS builder
-ARG WEBHOOK_GO_VERSION=2.14.3
+ARG WEBHOOK_GO_VERSION=2.17.0
 
 RUN apk add --no-cache ca-certificates
 
@@ -26,6 +26,7 @@ LABEL org.label-schema.maintainer="Vox Pupuli Team <voxpupuli@groups.io>" \
 
 ENV USER="puppet"
 ENV PORT=4000
+ENV PROTECTED=true
 ENV TLS=false
 ENV DEPLOY_ON_SUCCESS_ONLY=false
 ENV DEFAULT_BRANCH="production"
@@ -36,6 +37,12 @@ ENV CHAT_USER="r10kbot"
 ENV ENABLE_QUEUE=false
 ENV MAX_CONCURRENT_JOBS=10
 ENV MAX_HISTORY_ITEMS=50
+ENV SECRETS_GITHUB=""
+ENV SECRETS_GITLAB=""
+ENV SECRETS_BITBUCKET=""
+ENV SECRETS_BITBUCKET_SERVER=""
+ENV SECRETS_GITEA=""
+ENV SECRETS_AZURE_DEVOPS=""
 
 USER root
 
