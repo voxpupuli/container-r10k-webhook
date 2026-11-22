@@ -13,8 +13,9 @@ It includes the webhook-go daemon and r10k gem along with all necessary dependen
 
 To run r10k, simply execute the container.
 The r10k binary is set as the default entrypoint.
-The container operates as the puppet user with a UID/GID of 999.
+The container runs as `64604:0` (group 0) and works under any UID, the same access model as the r10k container, see its [migration notes](https://github.com/voxpupuli/container-r10k/blob/main/MIGRATION.md).
 You can use a shared volume with a Puppet server and mount it at `/etc/puppetlabs/code/environments`.
+When sharing a code volume with openvoxserver, run the container as `user: "64604:0"` (the image default) so it can write to a volume owned by `64604:0`.
 
 ```yaml
 services:

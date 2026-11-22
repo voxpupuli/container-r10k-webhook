@@ -1,4 +1,4 @@
-ARG R10K_VERSION=5.0.0
+ARG R10K_VERSION=5.0.3
 
 FROM docker.io/library/golang:alpine AS builder
 ARG WEBHOOK_GO_VERSION=2.14.3
@@ -47,15 +47,17 @@ COPY Containerfile /
 RUN apk update \
     && apk add --no-cache ca-certificates jq bash sudo \
     &&  mkdir -m 0755 -p /etc/voxpupuli/webhook \
-    && chown puppet: /etc/voxpupuli/webhook \
+    && chgrp -R 0 /etc/voxpupuli/webhook \
+    && chmod -R g=u /etc/voxpupuli/webhook \
     && chmod +x /container-entrypoint.d/*.sh \
     && echo "puppet ALL=(ALL) NOPASSWD: /usr/sbin/update-ca-certificates" > /etc/sudoers.d/puppet \
     && chmod 440 /etc/sudoers.d/puppet \
     && chown root:root /etc/sudoers.d/puppet \
     && chmod 0770 /usr/local/share/ca-certificates/ \
-    && chown -R root:999 /usr/local/share/ca-certificates/
+    && chgrp -R 0 /usr/local/share/ca-certificates/
 
-USER puppet
+# GID 0 is what matters, the UID can be set freely (same model as the r10k image)
+USER 64604:0
 
 EXPOSE 4000
 ENTRYPOINT ["/container-entrypoint.sh"]
